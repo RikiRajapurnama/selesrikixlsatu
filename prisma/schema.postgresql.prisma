@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Promo {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  price       String
+  oldPrice    String?
+  badge       String?
+  image       String?
+  startDate   String?
+  endDate     String?
+  isActive    Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Package {
+  id          String   @id @default(cuid())
+  name        String
+  speed       String
+  price       Int
+  oldPrice    Int?
+  description String?
+  badge       String?
+  isOneTime   Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  registrations Registration[]
+}
+
+model Banner {
+  id           String   @id @default(cuid())
+  title        String   @default("Nikmati Internet Rumah Super Cepat dengan XL SATU WiFi")
+  subtitle     String   @default("Solusi internet rumah untuk keluarga, belajar, bekerja, streaming, gaming, dan hiburan tanpa batas.")
+  badge        String   @default("Internet Cepat • Stabil • Terjangkau")
+  ctaText      String   @default("Chat WhatsApp")
+  ctaSecondary String   @default("Daftar Sekarang")
+  image        String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Benefit {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  icon        String?
+  isActive    Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ServiceArea {
+  id          String   @id @default(cuid())
+  city        String
+  district    String?
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Registration {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String
+  packageId String?
+  address   String?
+  note      String?
+  status    String   @default("baru")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  package   Package? @relation(fields: [packageId], references: [id])
+}
+
+model Settings {
+  id             String  @id @default("singleton")
+  websiteName    String  @default("XL SATU WiFi")
+  logo           String?
+  whatsappNumber String  @default("083177522021")
+  instagram      String?
+  facebook       String?
+  footerText     String  @default("Internet Rumah, Hidup Lebih Lancar")
+  googleMaps     String?
+  salesName      String  @default("Riki")
+  salesPhone     String  @default("083177522021")
+  salesPhoto     String?
+  salesDesc      String  @default("Sales XL SATU WiFi")
+  salesArea      String?
+}
