@@ -1,7 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { ClipboardList, CheckCircle2, Loader2 } from "lucide-react";
+import {
+  ClipboardList,
+  CheckCircle2,
+  Loader2,
+  Camera,
+  Home,
+  CreditCard,
+} from "lucide-react";
 
 type PackageItem = {
   id: string;
@@ -9,6 +16,8 @@ type PackageItem = {
   speed: string;
   isOneTime: boolean;
 };
+
+const MAX_PHOTO_BYTES = 1.5 * 1024 * 1024;
 
 export default function RegistrationForm({
   packages,
@@ -18,10 +27,13 @@ export default function RegistrationForm({
   const [form, setForm] = useState({
     name: "",
     phone: "",
+    email: "",
     packageId: "",
     address: "",
     note: "",
   });
+  const [photoHouse, setPhotoHouse] = useState("");
+  const [photoKtp, setPhotoKtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -33,6 +45,39 @@ export default function RegistrationForm({
     setForm((f) => ({ ...f, [name]: value }));
   }
 
+  function fileToDataUrl(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result));
+      reader.onerror = () => reject(new Error("Gagal membaca file."));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function handlePhoto(
+    e: React.ChangeEvent<HTMLInputElement>,
+    setter: (v: string) => void
+  ) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setError("File foto harus berupa gambar (JPG/PNG).");
+      return;
+    }
+    if (file.size > MAX_PHOTO_BYTES) {
+      setError("Ukuran foto maksimal 1,5 MB. Silakan kompres foto kamu.");
+      return;
+    }
+    try {
+      const dataUrl = await fileToDataUrl(file);
+      setter(dataUrl);
+      setError("");
+    } catch {
+      setError("Gagal memproses foto. Coba lagi.");
+    }
+    e.target.value = "";
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
@@ -40,16 +85,29 @@ export default function RegistrationForm({
       setError("Nama dan nomor WhatsApp wajib diisi.");
       return;
     }
+    if (!photoHouse || !photoKtp) {
+      setError("Foto depan rumah dan foto KTP wajib diisi.");
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch("/api/registration", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, photoHouse, photoKtp }),
       });
       if (res.ok) {
         setSuccess(true);
-        setForm({ name: "", phone: "", packageId: "", address: "", note: "" });
+        setForm({
+          name: "",
+          phone: "",
+          email: "",
+          packageId: "",
+          address: "",
+          note: "",
+        });
+        setPhotoHouse("");
+        setPhotoKtp("");
       } else {
         setError("Gagal mengirim pendaftaran. Coba lagi.");
       }
@@ -129,6 +187,18 @@ export default function RegistrationForm({
             </div>
 
             <div>
+              <label className="form-label">Email</label>
+              <input
+                name="email"
+                type="email"
+                value={form.email}
+                onChange={handleChange}
+                className="form-input"
+                placeholder="nama@email.com"
+              />
+            </div>
+
+            <div>
               <label className="form-label">Pilih Paket</label>
               <select
                 name="packageId"
@@ -146,7 +216,7 @@ export default function RegistrationForm({
             </div>
 
             <div>
-              <label className="form-label">Alamat Pemasangan</label>
+              <label className="form-label">Alamat Pemasangan *</label>
               <textarea
                 name="address"
                 value={form.address}
@@ -155,6 +225,28 @@ export default function RegistrationForm({
                 placeholder="Alamat lengkap tempat pemasangan"
               />
             </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <PhotoUpload
+                label="Foto Depan Rumah *"
+                icon={<Home size={18} />}
+                value={photoHouse}
+                onChange={handlePhoto}
+                setter={setPhotoHouse}
+              />
+              <PhotoUpload
+                label="Foto KTP *"
+                icon={<CreditCard size={18} />}
+                value={photoKtp}
+                onChange={handlePhoto}
+                setter={setPhotoKtp}
+              />
+            </div>
+
+            <p className="text-xs text-slate-400">
+              Maksimal 1,5 MB per foto (JPG/PNG). Foto kamu aman dan hanya
+              digunakan verifikasi pemasangan.
+            </p>
 
             <div>
               <label className="form-label">Catatan (opsional)</label>
@@ -185,5 +277,53 @@ export default function RegistrationForm({
         )}
       </div>
     </section>
+  );
+}
+
+function PhotoUpload({
+  label,
+  icon,
+  value,
+  onChange,
+  setter,
+}: {
+  label: string;
+  icon: React.ReactNode;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>, setter: (v: string) => void) => void;
+  setter: (v: string) => void;
+}) {
+  return (
+    <div>
+      <label className="form-label">{label}</label>
+      <label className="relative block w-full cursor-pointer">
+        {value ? (
+          <img
+            src={value}
+            alt={label}
+            className="w-full h-32 object-cover rounded-xl border border-slate-200"
+          />
+        ) : (
+          <span className="flex flex-col items-center justify-center gap-2 w-full h-32 rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 text-slate-400 hover:border-primary hover:text-primary transition-colors">
+            <span className="w-10 h-10 rounded-full bg-blue-50 text-primary flex items-center justify-center">
+              <Camera size={18} />
+            </span>
+            <span className="text-xs font-medium flex items-center gap-1.5">
+              {icon}
+              Pilih Foto
+            </span>
+          </span>
+        )}
+        <input
+          type="file"
+          accept="image/*"
+          className="sr-only"
+          onChange={(e) => onChange(e, setter)}
+        />
+      </label>
+      <span className="mt-1 text-[11px] text-slate-400">
+        {value ? "Tersimpan ✓" : "JPG/PNG, maks 1,5 MB"}
+      </span>
+    </div>
   );
 }

@@ -10,8 +10,11 @@ type Registration = {
   id: string;
   name: string;
   phone: string;
+  email?: string | null;
   address?: string | null;
   note?: string | null;
+  photoHouse?: string | null;
+  photoKtp?: string | null;
   status: string;
   createdAt: string;
   package?: { name: string } | null;
@@ -113,13 +116,14 @@ export default function RegistrationsAdmin() {
         <EmptyState message="Belum ada pendaftaran." />
       ) : (
         <div className="overflow-x-auto card">
-          <table className="w-full text-sm min-w-[760px]">
+          <table className="w-full text-sm min-w-[880px]">
             <thead>
               <tr className="text-left text-slate-400 text-xs border-b border-slate-100">
                 <th className="px-5 py-3.5 font-medium">Nama</th>
-                <th className="px-3 py-3.5 font-medium">WhatsApp</th>
+                <th className="px-3 py-3.5 font-medium">Kontak</th>
                 <th className="px-3 py-3.5 font-medium">Paket</th>
                 <th className="px-3 py-3.5 font-medium">Alamat</th>
+                <th className="px-3 py-3.5 font-medium">Foto</th>
                 <th className="px-3 py-3.5 font-medium">Tanggal</th>
                 <th className="px-3 py-3.5 font-medium">Status</th>
                 <th className="px-3 py-3.5 font-medium">Aksi</th>
@@ -132,9 +136,30 @@ export default function RegistrationsAdmin() {
                     <p className="font-semibold text-dark">{reg.name}</p>
                     {reg.note && <p className="text-xs text-slate-400 truncate max-w-[140px]">{reg.note}</p>}
                   </td>
-                  <td className="px-3 py-4 text-slate-600">{reg.phone}</td>
+                  <td className="px-3 py-4">
+                    <p className="text-slate-600 font-medium">{reg.phone}</p>
+                    {reg.email && <p className="text-xs text-slate-400 truncate max-w-[160px]">{reg.email}</p>}
+                  </td>
                   <td className="px-3 py-4 text-slate-600">{reg.package?.name || "-"}</td>
                   <td className="px-3 py-4 text-slate-500 max-w-[160px] truncate">{reg.address || "-"}</td>
+                  <td className="px-3 py-4">
+                    <div className="flex gap-2">
+                      {reg.photoHouse ? (
+                        <a href={reg.photoHouse} target="_blank" rel="noopener noreferrer" title="Foto Depan Rumah" className="block w-10 h-10 rounded-lg overflow-hidden border border-slate-200 hover:ring-2 hover:ring-primary transition-shadow">
+                          <img src={reg.photoHouse} alt="Depan rumah" className="w-full h-full object-cover" />
+                        </a>
+                      ) : (
+                        <span className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-300 text-[10px] font-medium">Rumah</span>
+                      )}
+                      {reg.photoKtp ? (
+                        <a href={reg.photoKtp} target="_blank" rel="noopener noreferrer" title="Foto KTP" className="block w-10 h-10 rounded-lg overflow-hidden border border-slate-200 hover:ring-2 hover:ring-primary transition-shadow">
+                          <img src={reg.photoKtp} alt="KTP" className="w-full h-full object-cover" />
+                        </a>
+                      ) : (
+                        <span className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-300 text-[10px] font-medium">KTP</span>
+                      )}
+                    </div>
+                  </td>
                   <td className="px-3 py-4 text-slate-500 whitespace-nowrap">{formatDate(reg.createdAt)}</td>
                   <td className="px-3 py-4">
                     <select

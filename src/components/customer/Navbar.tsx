@@ -81,9 +81,10 @@ export default function Navbar({
             href="/admin/login"
             aria-label="Login Admin"
             title="Login Admin"
-            className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-primary hover:bg-blue-50 transition-colors"
+            className="h-10 px-2.5 rounded-xl flex items-center gap-1.5 text-sm font-medium text-slate-400 hover:text-primary hover:bg-blue-50 transition-colors"
           >
-            <Lock size={18} />
+            <Lock size={16} />
+            <span className="hidden xl:inline">Admin</span>
           </Link>
           <a
             href={waUrl}
@@ -105,7 +106,7 @@ export default function Navbar({
       </nav>
 
       {open && (
-        <div className="lg:hidden fixed inset-x-0 top-[60px] bottom-0 bg-white z-40 overflow-y-auto animate-fade-in">
+        <div className="lg:hidden absolute top-full left-0 right-0 bg-white max-h-[calc(100vh-60px)] overflow-y-auto animate-fade-in shadow-lg">
           <div className="p-4 flex flex-col gap-1">
             {NAV_LINKS.map((link) => (
               <a

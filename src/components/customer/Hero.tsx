@@ -59,19 +59,19 @@ export default function Hero({ banner, whatsappNumber }: HeroProps) {
             {subtitle}
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             <a
               href={waUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn !bg-green !text-white !py-3.5 !px-7 text-base !rounded-xl hover:!shadow-[0_12px_30px_rgba(0,184,148,0.4)]"
+              className="btn !bg-green !text-white !py-3.5 !px-7 text-base !rounded-xl hover:!shadow-[0_12px_30px_rgba(0,184,148,0.4)] w-full justify-center sm:w-auto"
             >
               <MessageCircle size={20} />
               {ctaText}
             </a>
             <a
               href="#paket"
-              className="btn !bg-white/15 backdrop-blur-sm !text-white !py-3.5 !px-7 text-base !rounded-xl border border-white/25 hover:!bg-white/25"
+              className="btn !bg-white/15 backdrop-blur-sm !text-white !py-3.5 !px-7 text-base !rounded-xl border border-white/25 hover:!bg-white/25 w-full justify-center sm:w-auto"
             >
               {ctaSecondary}
               <ArrowRight size={20} />

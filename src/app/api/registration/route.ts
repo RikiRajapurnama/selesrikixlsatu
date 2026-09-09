@@ -22,19 +22,27 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, phone, packageId, address, note } = body || {};
+    const { name, phone, email, packageId, address, note, photoHouse, photoKtp } = body || {};
 
     if (!name || !phone) {
       return NextResponse.json({ error: "Nama dan nomor WhatsApp wajib diisi." }, { status: 400 });
     }
 
+    const sanitizeBase64 = (value: unknown) =>
+      typeof value === "string" && value.startsWith("data:image/") && value.length <= 600000
+        ? value
+        : null;
+
     const registration = await prisma.registration.create({
       data: {
         name: String(name).trim().slice(0, 100),
         phone: String(phone).trim().slice(0, 20),
+        email: email ? String(email).trim().slice(0, 100) : null,
         packageId: packageId || null,
         address: address || null,
         note: note || null,
+        photoHouse: sanitizeBase64(photoHouse),
+        photoKtp: sanitizeBase64(photoKtp),
         status: "baru",
       },
     });

@@ -37,6 +37,19 @@ body {
   box-sizing: border-box;
 }
 
+html,
+body {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
 img {
   max-width: 100%;
   height: auto;

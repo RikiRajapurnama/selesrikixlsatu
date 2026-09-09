@@ -84,16 +84,19 @@ model ServiceArea {
 }
 
 model Registration {
-  id        String   @id @default(cuid())
-  name      String
-  phone     String
-  packageId String?
-  address   String?
-  note      String?
-  status    String   @default("baru")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  package   Package? @relation(fields: [packageId], references: [id])
+  id         String   @id @default(cuid())
+  name       String
+  phone      String
+  email      String?
+  packageId  String?
+  address    String?
+  note       String?
+  photoHouse String?
+  photoKtp   String?
+  status     String   @default("baru")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  package    Package? @relation(fields: [packageId], references: [id])
 }
 
 model Settings {
