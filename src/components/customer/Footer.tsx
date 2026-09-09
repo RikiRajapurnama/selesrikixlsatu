@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Wifi, Phone, MessageCircle } from "lucide-react";
+import { Wifi, Phone, MessageCircle, Lock } from "lucide-react";
 import { waLink } from "@/lib/utils";
 import { InstagramIcon, FacebookIcon } from "@/components/BrandIcons";
 
@@ -133,6 +133,13 @@ export default function Footer({
           <p className="text-xs text-blue-200/70">
             Developed by <span className="text-white font-medium">Sales {salesName}</span>
           </p>
+          <Link
+            href="/admin/login"
+            className="text-xs text-blue-200/70 hover:text-white transition-colors inline-flex items-center gap-1.5"
+          >
+            <Lock size={12} />
+            Login Admin
+          </Link>
         </div>
       </div>
     </footer>

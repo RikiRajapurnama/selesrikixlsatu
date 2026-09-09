@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, Wifi, MessageCircle } from "lucide-react";
+import { Menu, X, Wifi, MessageCircle, Lock } from "lucide-react";
 import { waLink } from "@/lib/utils";
 
 const NAV_LINKS = [
@@ -77,6 +77,14 @@ export default function Navbar({
         </ul>
 
         <div className="flex items-center gap-2">
+          <Link
+            href="/admin/login"
+            aria-label="Login Admin"
+            title="Login Admin"
+            className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-primary hover:bg-blue-50 transition-colors"
+          >
+            <Lock size={18} />
+          </Link>
           <a
             href={waUrl}
             target="_blank"
@@ -119,6 +127,14 @@ export default function Navbar({
               <MessageCircle size={18} />
               Daftar Sekarang
             </a>
+            <Link
+              href="/admin/login"
+              onClick={() => setOpen(false)}
+              className="mt-2 flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl text-slate-500 font-medium border border-slate-100 hover:bg-blue-50 hover:text-primary transition-colors"
+            >
+              <Lock size={16} />
+              Login Admin
+            </Link>
             <p className="text-center text-xs text-slate-400 mt-4">
               Sales: Riki • {whatsappNumber}
             </p>
